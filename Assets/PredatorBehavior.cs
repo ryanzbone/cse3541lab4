@@ -6,7 +6,7 @@ public class PredatorBehavior : MonoBehaviour
 {
   public float speed;
   public GameObject target, emptyTarget;
-  public int viewDistance;
+  public int viewDistance, viewAngle;
   private RaycastHit hit;
   private Ray viewRay;
 
@@ -20,15 +20,16 @@ public class PredatorBehavior : MonoBehaviour
     speed = 0.15f;
     name = "predator";
     viewDistance = 10;
+    viewAngle = 30;
     transform.position = new Vector3 (Random.Range (-20, 0), 0, Random.Range (-20, 0));
   }
 
   public void Update ()
   {
-    for (int i = -30; i <= 30; i++) {
-      Vector3 k = Quaternion.AngleAxis (i, Vector3.up) * transform.forward;
-      Debug.DrawRay (transform.position, k * viewDistance);
-    }
+    //for (int i = -viewAngle; i <= viewAngle; i++) {
+      //Vector3 k = Quaternion.AngleAxis (i, Vector3.up) * transform.forward;
+      //Debug.DrawRay (transform.position, k * viewDistance);
+    //}
 
     SearchForTarget ();
 
@@ -49,10 +50,9 @@ public class PredatorBehavior : MonoBehaviour
   private void SearchForTarget ()
   {
     viewRay.origin = transform.position;
-    viewRay.direction = Quaternion.AngleAxis (-30, Vector3.up) * transform.forward;
-    for (int i = -29; i <= 30; i++) {
-      CheckForRaycastHit ();
+    for (int i = -viewAngle; i <= viewAngle; i++) {
       viewRay.direction = Quaternion.AngleAxis (i, Vector3.up) * viewRay.direction;
+      CheckForRaycastHit ();
     }
   }
 
