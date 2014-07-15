@@ -20,7 +20,7 @@ public class PreyBehavior : MonoBehaviour
     runTime = 60;
     coolDown = 140;
     name = "prey";
-    transform.position = new Vector3 (Random.Range (-10, 10), 0, Random.Range (-10, 10));
+    transform.position = new Vector3 (Random.Range (-20, 20), 0, Random.Range (-20, 20));
     ResetHeading ();
   }
 
@@ -42,7 +42,7 @@ public class PreyBehavior : MonoBehaviour
   {
     if (shouldRun && canRun)
     {
-      speed = 0.2f;
+      speed = 0.15f;
       runTime--;
       if (runTime < 0)
       {
@@ -67,28 +67,20 @@ public class PreyBehavior : MonoBehaviour
     viewRay.origin = transform.position;
     for (int i = -viewAngle; i <= viewAngle; i++) {
       viewRay.direction = Quaternion.AngleAxis (i, Vector3.up) * viewRay.direction;
-      CheckForRaycastHit ();
+      if (Physics.Raycast (viewRay, out hit, viewDistance)) {
+        if (hit.collider.gameObject.name == "predator") {
+          transform.rotation = Quaternion.LookRotation(transform.position - hit.collider.gameObject.transform.position);
+          shouldRun = true;
+        }
+      }
     }
   }
 
-  void CheckForRaycastHit ()
-  {
-    if (Physics.Raycast (viewRay, out hit, viewDistance)) {
-      HandleHit ();
-    }
-  }
-
-  private void HandleHit ()
-  {
-    if (hit.collider.gameObject.name == "predator") {
-      transform.rotation = Quaternion.LookRotation(transform.position - hit.collider.gameObject.transform.position);
-      shouldRun = true;
-    }
-  }
   public void OnCollisionEnter (Collision hit)
   {
-    if (hit.gameObject.tag == "environment")
-      ResetHeading ();
+    if (hit.gameObject.tag == "environment") {
+      transform.rotation = Quaternion.LookRotation(transform.position - hit.collider.gameObject.transform.position);
+    }
   }
 
   public void ResetHeading ()
