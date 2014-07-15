@@ -17,19 +17,19 @@ public class PredatorBehavior : MonoBehaviour
     emptyTarget.transform.position = new Vector3 (0, 100, 0);
     target = emptyTarget;
     Debug.Log (target.transform.position);
-    speed = 0.15f;
+    speed = 0.2f;
     name = "predator";
     viewDistance = 10;
     viewAngle = 30;
-    transform.position = new Vector3 (Random.Range (-20, 0), 0, Random.Range (-20, 0));
+    transform.position = new Vector3 (Random.Range (-20, 20), 0, Random.Range (-20, 20));
   }
 
   public void Update ()
   {
-    //for (int i = -viewAngle; i <= viewAngle; i++) {
-      //Vector3 k = Quaternion.AngleAxis (i, Vector3.up) * transform.forward;
-      //Debug.DrawRay (transform.position, k * viewDistance);
-    //}
+    for (int i = -viewAngle; i <= viewAngle; i++) {
+      Vector3 k = Quaternion.AngleAxis (i, Vector3.up) * transform.forward;
+      Debug.DrawRay (transform.position, k * viewDistance);
+    }
 
     SearchForTarget ();
 
@@ -52,25 +52,15 @@ public class PredatorBehavior : MonoBehaviour
     viewRay.origin = transform.position;
     for (int i = -viewAngle; i <= viewAngle; i++) {
       viewRay.direction = Quaternion.AngleAxis (i, Vector3.up) * viewRay.direction;
-      CheckForRaycastHit ();
+      if (Physics.Raycast (viewRay, out hit, viewDistance)) {
+        if (hit.collider.gameObject.name == "prey" && HitCloserThanTarget (hit)) {
+          target = hit.collider.gameObject;
+        }
+      }
     }
   }
 
-  void CheckForRaycastHit ()
-  {
-    if (Physics.Raycast (viewRay, out hit, viewDistance)) {
-      HandleHit ();
-    }
-  }
-
-  private void HandleHit ()
-  {
-    if (hit.collider.gameObject.name == "prey" && HitCloserThanTarget ()) {
-      target = hit.collider.gameObject;
-    }
-  }
-
-  private bool HitCloserThanTarget ()
+  private bool HitCloserThanTarget (RaycastHit hit)
   {
     return Vector3.Distance (transform.position, hit.transform.position) < Vector3.Distance (transform.position, target.transform.position);
   }
@@ -82,7 +72,7 @@ public class PredatorBehavior : MonoBehaviour
       target = emptyTarget;
     }
     if (hit.gameObject.tag == "environment") {
-      ResetHeading ();
+      transform.rotation = Quaternion.LookRotation(transform.position - hit.collider.gameObject.transform.position);
     }
   }
 
