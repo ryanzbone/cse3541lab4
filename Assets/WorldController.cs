@@ -17,9 +17,4 @@ public class WorldController : MonoBehaviour
 				} 
 				Instantiate (PredatorPrefab);
 		}
-	
-		void Update ()
-		{
-
-		}
 }
