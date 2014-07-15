@@ -26,10 +26,10 @@ public class PreyBehavior : MonoBehaviour
 
   public void Update ()
   {
-    for (int i = -viewAngle; i <= viewAngle; i++) {
-      Vector3 k = Quaternion.AngleAxis (i, Vector3.up) * transform.forward;
-      Debug.DrawRay (transform.position, k * viewDistance);
-    }
+    //for (int i = -viewAngle; i <= viewAngle; i++) {
+      //Vector3 k = Quaternion.AngleAxis (i, Vector3.up) * transform.forward;
+      //Debug.DrawRay (transform.position, k * viewDistance);
+    //}
 
     SearchForPredator();
     CalculateStaminaAndRunSpeed();
